@@ -1,0 +1,11 @@
+--- src/display.rs
++++ src/display.rs
+@@ -21,7 +21,7 @@
+     let banner_width = banner_lines.iter().map(|line| line.len()).max().unwrap_or(0) as u16;
+ 
+     // Calculate start_row as 1/4 of the way down (closer to top).
+-    let start_row = if banner_height < rows { (rows - banner_height) / 2 } else { 0 };
++    let start_row = rows / 4;  // Corrected calculation
+ 
+     let start_col = if banner_width < cols { (cols - banner_width) / 2 } else { 0 };
+ 

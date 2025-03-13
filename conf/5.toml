@@ -1,7 +1,7 @@
 banner = "Default Banner"
-figlet_font = "isometric1"  # A more unusual font
-banner_color = "Yellow"
-shortcuts_color = "Green"
+figlet_font = "poison"  # A more unusual font
+banner_color = "Red"
+shortcuts_color = "White"
 prompt_color = "Blue"
 
 [shortcuts]

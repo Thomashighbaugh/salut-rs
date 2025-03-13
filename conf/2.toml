@@ -1,7 +1,7 @@
 banner = "Default Banner"
 figlet_font = "slant"  # A slanted font
 banner_color = "DarkRed"
-shortcuts_color = "DarkGrey"
+shortcuts_color = "White"
 prompt_color = "DarkCyan"
 
 [shortcuts]

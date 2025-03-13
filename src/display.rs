@@ -15,25 +15,20 @@ pub fn clear_screen() -> Result<(), Box<dyn std::error::Error>> {
 pub fn display_banner(config: &Config, banner: &str) -> Result<(), Box<dyn std::error::Error>> {
     let (cols, rows) = size()?;
     let banner_lines: Vec<&str> = banner.lines().collect();
-    let banner_height = banner_lines.len() as u16;
     let banner_width = banner_lines
         .iter()
         .map(|line| line.len())
         .max()
         .unwrap_or(0) as u16;
 
-    let start_row = if banner_height < rows {
-        (rows - banner_height) / 2
-    } else {
-        0
-    };
+    let start_row = rows / 8; // One-quarter down from the top.
+
     let start_col = if banner_width < cols {
         (cols - banner_width) / 2
     } else {
         0
     };
 
-    // Get the color from config, convert to Color enum, and use it
     let banner_color = match &config.banner_color {
         Some(color_str) => parse_color(color_str)?,
         None => Color::Green, // Default color
@@ -70,14 +65,14 @@ pub fn display_shortcuts(config: &Config) -> Result<(), Box<dyn std::error::Erro
     for (key, shortcut) in &config.shortcuts {
         //the icon
         if let Some(icon) = &shortcut.icon {
-            shortcuts_string.push_str(&format!("{}", icon));
+            shortcuts_string.push_str(&format!("{} ", icon)); // Add space after icon
         }
         //The name of the shortcut
-        shortcuts_string.push_str(&format!("{:<4}", shortcut.name)); // Left-align names, fixed width
+        shortcuts_string.push_str(&format!("{:<4} ", shortcut.name)); // Left-align names, fixed width
 
         //The key
-        shortcuts_string.push_str(&format!("({})      ", key)); //add padding with the key
-                                                                // Add spacing between entries
+        shortcuts_string.push_str(&format!("({})     ", key));
+        // Add spacing between entries
         shortcuts_string.push(' '); // Keep a space between entries
     }
 
