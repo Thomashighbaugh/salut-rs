@@ -2,8 +2,8 @@
 
 `salut-rs` is a terminal greeter application written in Rust, inspired by the C++ project [salut](https://github.com/Wervice/salut) by Wervice. This project provides a customizable welcome message and quick access to frequently used applications when you open a new terminal and can configure using a sraight forward `.toml` configuration file.
 
-<img src = "https://github.com/Thomashighbaugh/salut-rs/blob/main/.github/assets/default.png" alt ="default appearance of the command when run" width = "400px">
-<img src = "https://github.com/Thomashighbaugh/salut-rs/blob/main/.github/assets/1.png" alt ="a variant appearance of the command when run" width = "400px">
+<img src = "https://github.com/Thomashighbaugh/salut-rs/blob/main/.github/assets/default.png" alt ="default appearance of the command when run" width = "800px">
+<img src = "https://github.com/Thomashighbaugh/salut-rs/blob/main/.github/assets/1.png" alt ="a variant appearance of the command when run" width = "800px">
 
 ## Motivation
 
