@@ -1,6 +1,7 @@
 banner = "Default Banner"
 figlet_font = "chunky"
 banner_color = "Magenta"
+banner_position = "3"
 shortcuts_color = "Cyan"
 prompt_color = "Red"
 

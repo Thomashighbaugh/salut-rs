@@ -1,6 +1,7 @@
 banner = "Default Banner"
 figlet_font = "standard"  # Classic Figlet font
 banner_color = "Green"
+banner_position = "3"
 shortcuts_color = "Blue"
 prompt_color = "Yellow"
 

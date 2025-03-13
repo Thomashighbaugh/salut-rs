@@ -186,6 +186,7 @@ bt.description = "Resource monitor"
 **Configuration Options:**
 
 - **`banner`:** (String) The text to be displayed in the banner.
+- **`banner_position`:** (Optional Integer) Controls the vertical positioning of the banner.  The screen height is divided by this value to determine the starting row for the banner.  For example, a value of `2` would position the banner near the middle of the screen, `3` would position it one-third of the way down, and `4` would position it one-quarter of the way down.  If omitted, the default value is `4`.
 - **`figlet_font`:** (Optional String) The name of the `figlet` font to use. If omitted, it defaults to "chunky". You can see a list of available fonts by running `showfigfonts` in your terminal.
 - **`shortcuts`:** (Table) Defines the shortcuts. Each shortcut is a table with the following fields:
   - **`name`:** (String) The name of the application or command.

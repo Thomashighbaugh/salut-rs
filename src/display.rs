@@ -15,13 +15,15 @@ pub fn clear_screen() -> Result<(), Box<dyn std::error::Error>> {
 pub fn display_banner(config: &Config, banner: &str) -> Result<(), Box<dyn std::error::Error>> {
     let (cols, rows) = size()?;
     let banner_lines: Vec<&str> = banner.lines().collect();
+    let banner_height = banner_lines.len() as u16;
     let banner_width = banner_lines
         .iter()
         .map(|line| line.len())
         .max()
         .unwrap_or(0) as u16;
 
-    let start_row = rows / 8; // One-quarter down from the top.
+    // --- MODIFIED POSITIONING ---
+    let start_row = rows / config.banner_position.unwrap_or(4); // Use configured value, default to 4.
 
     let start_col = if banner_width < cols {
         (cols - banner_width) / 2
@@ -29,6 +31,7 @@ pub fn display_banner(config: &Config, banner: &str) -> Result<(), Box<dyn std::
         0
     };
 
+    // Get the color from config, convert to Color enum, and use it
     let banner_color = match &config.banner_color {
         Some(color_str) => parse_color(color_str)?,
         None => Color::Green, // Default color

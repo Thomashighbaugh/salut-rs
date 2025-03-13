@@ -7,7 +7,7 @@ use std::error::Error;
 use std::fs;
 use std::path::PathBuf;
 use std::process::Command;
- // Import FromStr
+use std::str::FromStr; // Import FromStr
 use toml;
 
 #[derive(Deserialize, Serialize, Debug)]
@@ -17,6 +17,7 @@ pub struct Config {
     pub banner_color: Option<String>,    // String representation of color
     pub shortcuts_color: Option<String>, // String representation
     pub prompt_color: Option<String>,    // String representation
+    pub banner_position: Option<u16>,    // New field: vertical position
     pub shortcuts: HashMap<String, Shortcut>,
 }
 
@@ -110,6 +111,7 @@ fn create_default_config(config_path: &PathBuf) -> Result<(), Box<dyn Error>> {
         banner_color: Some("Green".to_string()), // Default: Green
         shortcuts_color: Some("Blue".to_string()), // Default: Blue
         prompt_color: Some("Yellow".to_string()), // Default: Yellow
+        banner_position: Some(4),                // Default: 1/4 of the way down
         shortcuts: default_shortcuts,
     };
 
@@ -121,6 +123,7 @@ fn create_default_config(config_path: &PathBuf) -> Result<(), Box<dyn Error>> {
 
 // Modified get_config to handle color parsing.
 pub fn get_config() -> Result<Config, Box<dyn Error>> {
+    // Changed return type to Result
     let config = load_config()?;
     Ok(config)
 }
