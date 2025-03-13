@@ -4,7 +4,7 @@ mod display;
 
 use config::get_config;
 use display::{clear_screen, display_banner, display_prompt, display_shortcuts};
-use std::io::{stdin, Read};
+use std::io::stdin;
 use std::process::Command;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
