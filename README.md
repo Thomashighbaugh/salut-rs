@@ -1,4 +1,3 @@
-````markdown
 # salut-rs: Terminal Greeter Implemented in Rust
 
 `salut-rs` is a terminal greeter application written in Rust, inspired by the C++ project [salut](https://github.com/Wervice/salut) by Wervice. This project provides a customizable welcome message and quick access to frequently used applications when you open a new terminal and can configure using a sraight forward `.toml` configuration file.
@@ -139,6 +138,7 @@ home.packages = with pkgs; [
 
 inputs.salut-rs.packages.${pkgs.system}.default
 ];
+
 ````
 
 3.  **Rebuild your system:**
@@ -189,7 +189,7 @@ bt.description = "Resource monitor"
 **Configuration Options:**
 
 - **`banner`:** (String) The text to be displayed in the banner.
-- **`banner_position`:** (Optional Integer) Controls the vertical positioning of the banner.  The screen height is divided by this value to determine the starting row for the banner.  For example, a value of `2` would position the banner near the middle of the screen, `3` would position it one-third of the way down, and `4` would position it one-quarter of the way down.  If omitted, the default value is `4`.
+- **`banner_position`:** (Optional Integer) Controls the vertical positioning of the banner. The screen height is divided by this value to determine the starting row for the banner. For example, a value of `2` would position the banner near the middle of the screen, `3` would position it one-third of the way down, and `4` would position it one-quarter of the way down. If omitted, the default value is `4`.
 - **`figlet_font`:** (Optional String) The name of the `figlet` font to use. If omitted, it defaults to "chunky". You can see a list of available fonts by running `showfigfonts` in your terminal.
 - **`shortcuts`:** (Table) Defines the shortcuts. Each shortcut is a table with the following fields:
   - **`name`:** (String) The name of the application or command.
@@ -260,4 +260,3 @@ This project is derived ultimately from the brilliant ideas and hard work of the
 ## License
 
 This project is licensed under the MIT License - see the `LICENSE` file for details.
-````
