@@ -4,7 +4,7 @@ mod display;
 
 use config::get_config;
 use display::{clear_screen, display_banner, display_prompt, display_shortcuts};
-use std::io::stdin;
+use std::io::{stdin, Read};
 use std::process::Command;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -16,9 +16,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     // Initial clear screen and display.
     clear_screen()?;
-    display_banner(&banner)?; // Pass the generated banner
+    display_banner(&config, &banner)?; // Pass the generated banner and config
     display_shortcuts(&config)?;
-    display_prompt()?;
+    display_prompt(&config)?;
 
     // Input handling loop
     let mut input = String::new();

@@ -12,7 +12,7 @@ pub fn clear_screen() -> Result<(), Box<dyn std::error::Error>> {
     Ok(())
 }
 
-pub fn display_banner(banner: &str) -> Result<(), Box<dyn std::error::Error>> {
+pub fn display_banner(config: &Config, banner: &str) -> Result<(), Box<dyn std::error::Error>> {
     let (cols, rows) = size()?;
     let banner_lines: Vec<&str> = banner.lines().collect();
     let banner_height = banner_lines.len() as u16;
@@ -33,15 +33,19 @@ pub fn display_banner(banner: &str) -> Result<(), Box<dyn std::error::Error>> {
         0
     };
 
+    let color_code = config.banner_color.as_deref().unwrap_or("\x1b[32m"); // Default to green
+    execute!(stdout(), Print(color_code))?;
+
     for (i, line) in banner_lines.iter().enumerate() {
         execute!(
             stdout(),
             crossterm::cursor::MoveTo(start_col, start_row + i as u16),
-            SetForegroundColor(Color::Green),
+            //SetForegroundColor(Color::Green),
             Print(line),
-            ResetColor
+            //ResetColor
         )?;
     }
+    execute!(stdout(), Print("\x1b[0m"))?; // Reset color
     Ok(())
 }
 pub fn display_shortcuts(config: &Config) -> Result<(), Box<dyn std::error::Error>> {
@@ -53,10 +57,17 @@ pub fn display_shortcuts(config: &Config) -> Result<(), Box<dyn std::error::Erro
     // Build the entire shortcuts string first
     let mut shortcuts_string = String::new();
     for (key, shortcut) in &config.shortcuts {
-        shortcuts_string.push_str(&format!(
-            "({}) {} - {}  ",
-            key, shortcut.icon, shortcut.name
-        ));
+        // Use the configured color, or default to blue if not set
+        let color_code = config.shortcuts_color.as_deref().unwrap_or("\x1b[34m");
+        shortcuts_string.push_str(color_code);
+
+        shortcuts_string.push_str(&format!("({})", key));
+        shortcuts_string.push_str("\x1b[0m"); // Reset color
+
+        if let Some(icon) = &shortcut.icon {
+            shortcuts_string.push_str(&format!(" {} ", icon));
+        }
+        shortcuts_string.push_str(&format!("{}  ", shortcut.name));
     }
 
     // Calculate the starting column for centering
@@ -70,19 +81,32 @@ pub fn display_shortcuts(config: &Config) -> Result<(), Box<dyn std::error::Erro
     execute!(
         stdout(),
         crossterm::cursor::MoveTo(start_col, shortcuts_start_row),
-        SetForegroundColor(Color::Blue),
+        //SetForegroundColor(Color::Blue),
         Print(shortcuts_string),
-        ResetColor
+        //ResetColor
     )?;
 
     Ok(())
 }
-pub fn display_prompt() -> Result<(), Box<dyn std::error::Error>> {
+pub fn display_prompt(config: &Config) -> Result<(), Box<dyn std::error::Error>> {
+    let (cols, _rows) = size()?;
+    let prompt_text = "Enter command: ";
+    let prompt_width = prompt_text.len() as u16;
+    let color_code = config.prompt_color.as_deref().unwrap_or("\x1b[33m"); // Default yellow
+
+    // Calculate centered column
+    let start_col = if prompt_width < cols {
+        (cols - prompt_width) / 2
+    } else {
+        0
+    };
+    execute!(stdout(), crossterm::cursor::MoveTo(start_col, _rows - 1))?; //place it at bottom
     execute!(
         stdout(),
-        SetForegroundColor(Color::Yellow),
-        Print("Enter command: "),
-        ResetColor
+        //SetForegroundColor(Color::Yellow),
+        Print(color_code),
+        Print(prompt_text),
+        Print("\x1b[0m")
     )?;
     stdout().flush()?;
     Ok(())

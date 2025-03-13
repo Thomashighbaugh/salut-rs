@@ -12,16 +12,20 @@ use toml;
 pub struct Config {
     pub banner: String,
     pub figlet_font: Option<String>, // Optional figlet font
+    pub banner_color: Option<String>,
+    pub shortcuts_color: Option<String>,
+    pub prompt_color: Option<String>,
     pub shortcuts: HashMap<String, Shortcut>,
 }
 
 #[derive(Deserialize, Serialize, Debug, Clone)]
 pub struct Shortcut {
     pub name: String,
-    pub icon: String,
+    pub icon: Option<String>, // Icon is now optional
     pub command: String,
     pub description: Option<String>, // Optional description
 }
+
 pub fn load_config() -> Result<Config, Box<dyn Error>> {
     let config_path = dirs::config_dir()
         .ok_or("Could not find config directory")?
@@ -42,7 +46,7 @@ fn create_default_config(config_path: &PathBuf) -> Result<(), Box<dyn Error>> {
         "nv".to_string(),
         Shortcut {
             name: "Neovim".to_string(),
-            icon: " ".to_string(),
+            icon: Some(" ".to_string()),
             command: "nvim".to_string(),
             description: Some("Open Neovim".to_string()),
         },
@@ -51,7 +55,7 @@ fn create_default_config(config_path: &PathBuf) -> Result<(), Box<dyn Error>> {
         "ft".to_string(),
         Shortcut {
             name: "Fastfetch".to_string(),
-            icon: " ".to_string(),
+            icon: Some(" ".to_string()),
             command: "fastfetch".to_string(),
             description: Some("Run Fastfetch".to_string()),
         },
@@ -60,7 +64,7 @@ fn create_default_config(config_path: &PathBuf) -> Result<(), Box<dyn Error>> {
         "zs".to_string(),
         Shortcut {
             name: "Zsh".to_string(),
-            icon: "$ ".to_string(),
+            icon: Some("$ ".to_string()),
             command: "zsh".to_string(),
             description: Some("Start Zsh Shell".to_string()),
         },
@@ -70,7 +74,7 @@ fn create_default_config(config_path: &PathBuf) -> Result<(), Box<dyn Error>> {
         "bp".to_string(),
         Shortcut {
             name: "Btop".to_string(),
-            icon: " ".to_string(),
+            icon: Some(" ".to_string()),
             command: "btop".to_string(),
             description: Some("Start Btop".to_string()),
         },
@@ -79,6 +83,9 @@ fn create_default_config(config_path: &PathBuf) -> Result<(), Box<dyn Error>> {
     let default_config = Config {
         banner: "Default Banner".to_string(), //A simpler banner as default
         figlet_font: Some("chunky".to_string()), // Default figlet font
+        banner_color: Some("\x1b[32m".to_string()), // Green
+        shortcuts_color: Some("\x1b[34m".to_string()), // Blue
+        prompt_color: Some("\x1b[33m".to_string()), // Yellow
         shortcuts: default_shortcuts,
     };
 
@@ -96,6 +103,9 @@ pub fn get_config() -> Config {
             Config {
                 banner: "Salut".to_string(),
                 figlet_font: Some("chunky".to_string()),
+                banner_color: Some("\x1b[32m".to_string()),
+                shortcuts_color: Some("\x1b[34m".to_string()),
+                prompt_color: Some("\x1b[33m".to_string()),
                 shortcuts: HashMap::new(),
             }
         }
