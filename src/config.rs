@@ -5,11 +5,13 @@ use std::collections::HashMap;
 use std::error::Error;
 use std::fs;
 use std::path::PathBuf;
+use std::process::Command;
 use toml;
 
 #[derive(Deserialize, Serialize, Debug)]
 pub struct Config {
     pub banner: String,
+    pub figlet_font: Option<String>, // Optional figlet font
     pub shortcuts: HashMap<String, Shortcut>,
 }
 
@@ -20,7 +22,6 @@ pub struct Shortcut {
     pub command: String,
     pub description: Option<String>, // Optional description
 }
-
 pub fn load_config() -> Result<Config, Box<dyn Error>> {
     let config_path = dirs::config_dir()
         .ok_or("Could not find config directory")?
@@ -77,6 +78,7 @@ fn create_default_config(config_path: &PathBuf) -> Result<(), Box<dyn Error>> {
 
     let default_config = Config {
         banner: "Default Banner".to_string(), //A simpler banner as default
+        figlet_font: Some("chunky".to_string()), // Default figlet font
         shortcuts: default_shortcuts,
     };
 
@@ -85,7 +87,6 @@ fn create_default_config(config_path: &PathBuf) -> Result<(), Box<dyn Error>> {
     fs::write(config_path, toml_string)?;
     Ok(())
 }
-
 pub fn get_config() -> Config {
     match load_config() {
         Ok(config) => config,
@@ -94,8 +95,25 @@ pub fn get_config() -> Config {
             // Fallback to an empty config or a hardcoded default.
             Config {
                 banner: "Salut".to_string(),
+                figlet_font: Some("chunky".to_string()),
                 shortcuts: HashMap::new(),
             }
         }
+    }
+}
+
+// Helper function to generate the banner using figlet.
+pub fn generate_banner(config: &Config) -> Result<String, Box<dyn Error>> {
+    let font = config.figlet_font.as_deref().unwrap_or("chunky");
+    let output = Command::new("figlet")
+        .arg("-f")
+        .arg(font)
+        .arg(&config.banner)
+        .output()?;
+
+    if output.status.success() {
+        Ok(String::from_utf8(output.stdout)?)
+    } else {
+        Err(format!("Figlet failed: {}", String::from_utf8(output.stderr)?).into())
     }
 }

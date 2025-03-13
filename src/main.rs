@@ -11,9 +11,12 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     // Load configuration.
     let config = get_config();
 
+    // Generate the banner using figlet
+    let banner = config::generate_banner(&config)?;
+
     // Initial clear screen and display.
     clear_screen()?;
-    display_banner(&config)?;
+    display_banner(&banner)?; // Pass the generated banner
     display_shortcuts(&config)?;
     display_prompt()?;
 
