@@ -15,7 +15,6 @@ pub fn clear_screen() -> Result<(), Box<dyn std::error::Error>> {
 pub fn display_banner(config: &Config, banner: &str) -> Result<(), Box<dyn std::error::Error>> {
     let (cols, rows) = size()?;
     let banner_lines: Vec<&str> = banner.lines().collect();
-    let banner_height = banner_lines.len() as u16;
     let banner_width = banner_lines
         .iter()
         .map(|line| line.len())
