@@ -1,4 +1,5 @@
 // salut-rs/src/config.rs
+use crossterm::style::Color;
 use dirs;
 use serde_derive::{Deserialize, Serialize};
 use std::collections::HashMap;
@@ -6,15 +7,16 @@ use std::error::Error;
 use std::fs;
 use std::path::PathBuf;
 use std::process::Command;
+use std::str::FromStr; // Import FromStr
 use toml;
 
 #[derive(Deserialize, Serialize, Debug)]
 pub struct Config {
     pub banner: String,
-    pub figlet_font: Option<String>, // Optional figlet font
-    pub banner_color: Option<String>,
-    pub shortcuts_color: Option<String>,
-    pub prompt_color: Option<String>,
+    pub figlet_font: Option<String>,     // Optional figlet font
+    pub banner_color: Option<String>,    // String representation of color
+    pub shortcuts_color: Option<String>, // String representation
+    pub prompt_color: Option<String>,    // String representation
     pub shortcuts: HashMap<String, Shortcut>,
 }
 
@@ -24,6 +26,29 @@ pub struct Shortcut {
     pub icon: Option<String>, // Icon is now optional
     pub command: String,
     pub description: Option<String>, // Optional description
+}
+
+// Helper function to convert color string to crossterm::style::Color.
+pub fn parse_color(color_str: &str) -> Result<Color, Box<dyn Error>> {
+    match color_str.to_lowercase().as_str() {
+        "black" => Ok(Color::Black),
+        "red" => Ok(Color::Red),
+        "green" => Ok(Color::Green),
+        "yellow" => Ok(Color::Yellow),
+        "blue" => Ok(Color::Blue),
+        "magenta" => Ok(Color::Magenta),
+        "cyan" => Ok(Color::Cyan),
+        "white" => Ok(Color::White),
+        "darkgrey" | "darkgray" => Ok(Color::DarkGrey), // Support both spellings
+        "darkred" => Ok(Color::DarkRed),
+        "darkgreen" => Ok(Color::DarkGreen),
+        "darkyellow" => Ok(Color::DarkYellow),
+        "darkblue" => Ok(Color::DarkBlue),
+        "darkmagenta" => Ok(Color::DarkMagenta),
+        "darkcyan" => Ok(Color::DarkCyan),
+        "darkwhite" => Ok(Color::DarkGrey), // Use DarkGrey for consistency
+        _ => Err(format!("Invalid color: {}", color_str).into()), // Return error for unknown colors
+    }
 }
 
 pub fn load_config() -> Result<Config, Box<dyn Error>> {
@@ -79,13 +104,12 @@ fn create_default_config(config_path: &PathBuf) -> Result<(), Box<dyn Error>> {
             description: Some("Start Btop".to_string()),
         },
     );
-
     let default_config = Config {
-        banner: "Default Banner".to_string(), //A simpler banner as default
-        figlet_font: Some("chunky".to_string()), // Default figlet font
-        banner_color: Some("\x1b[32m".to_string()), // Green
-        shortcuts_color: Some("\x1b[34m".to_string()), // Blue
-        prompt_color: Some("\x1b[33m".to_string()), // Yellow
+        banner: "Default Banner".to_string(),
+        figlet_font: Some("chunky".to_string()),
+        banner_color: Some("Green".to_string()), // Default: Green
+        shortcuts_color: Some("Blue".to_string()), // Default: Blue
+        prompt_color: Some("Yellow".to_string()), // Default: Yellow
         shortcuts: default_shortcuts,
     };
 
@@ -94,22 +118,11 @@ fn create_default_config(config_path: &PathBuf) -> Result<(), Box<dyn Error>> {
     fs::write(config_path, toml_string)?;
     Ok(())
 }
-pub fn get_config() -> Config {
-    match load_config() {
-        Ok(config) => config,
-        Err(err) => {
-            eprintln!("Error loading config: {}", err);
-            // Fallback to an empty config or a hardcoded default.
-            Config {
-                banner: "Salut".to_string(),
-                figlet_font: Some("chunky".to_string()),
-                banner_color: Some("\x1b[32m".to_string()),
-                shortcuts_color: Some("\x1b[34m".to_string()),
-                prompt_color: Some("\x1b[33m".to_string()),
-                shortcuts: HashMap::new(),
-            }
-        }
-    }
+
+// Modified get_config to handle color parsing.
+pub fn get_config() -> Result<Config, Box<dyn Error>> {
+    let config = load_config()?;
+    Ok(config)
 }
 
 // Helper function to generate the banner using figlet.

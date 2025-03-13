@@ -8,33 +8,32 @@ use std::io::{stdin, Read};
 use std::process::Command;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
-    // Load configuration.
-    let config = get_config();
+    // Load configuration, handling potential errors.
+    let config = get_config()?;
 
-    // Generate the banner using figlet
+    // Generate the banner using figlet.
     let banner = config::generate_banner(&config)?;
 
     // Initial clear screen and display.
     clear_screen()?;
-    display_banner(&config, &banner)?; // Pass the generated banner and config
+    display_banner(&config, &banner)?; // Pass the generated banner.
     display_shortcuts(&config)?;
     display_prompt(&config)?;
 
-    // Input handling loop
+    // Input handling loop (remains unchanged).
     let mut input = String::new();
     stdin().read_line(&mut input)?;
     let input = input.trim();
 
-    // Check if the input matches a shortcut and execute the command
+    // Check if the input matches a shortcut and execute the command.
     if let Some(shortcut) = config.shortcuts.get(input) {
         let mut child = Command::new("sh")
             .arg("-c")
             .arg(&shortcut.command)
             .spawn()?;
-        child.wait()?; // Wait for the command to finish
+        child.wait()?; // Wait for the command to finish.
     } else if input == "q" {
-        // Quit
-        return Ok(());
+        return Ok(()); // Quit
     } else {
         println!("Invalid command: {}", input);
     }

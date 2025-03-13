@@ -1,5 +1,5 @@
 // salut-rs/src/display.rs
-use crate::config::Config;
+use crate::config::{generate_banner, parse_color, Config};
 use crossterm::{
     execute,
     style::{Color, Print, ResetColor, SetForegroundColor},
@@ -33,45 +33,55 @@ pub fn display_banner(config: &Config, banner: &str) -> Result<(), Box<dyn std::
         0
     };
 
-    let color_code = config.banner_color.as_deref().unwrap_or("\x1b[32m"); // Default to green
-    execute!(stdout(), Print(color_code))?;
+    // Get the color from config, convert to Color enum, and use it
+    let banner_color = match &config.banner_color {
+        Some(color_str) => parse_color(color_str)?,
+        None => Color::Green, // Default color
+    };
+    execute!(stdout(), SetForegroundColor(banner_color))?;
 
     for (i, line) in banner_lines.iter().enumerate() {
         execute!(
             stdout(),
             crossterm::cursor::MoveTo(start_col, start_row + i as u16),
-            //SetForegroundColor(Color::Green),
             Print(line),
-            //ResetColor
         )?;
     }
-    execute!(stdout(), Print("\x1b[0m"))?; // Reset color
+    execute!(stdout(), ResetColor)?; // Reset color
     Ok(())
 }
+
 pub fn display_shortcuts(config: &Config) -> Result<(), Box<dyn std::error::Error>> {
     let (cols, rows) = size()?; // Get terminal dimensions
 
-    // Calculate the starting row for the shortcuts (e.g., 3/4 of the way down)
-    let shortcuts_start_row = (rows as f32 * 0.75) as u16;
+    // Calculate the starting row for the shortcuts.
+    let banner_height = generate_banner(config)?.lines().count() as u16;
+    let shortcuts_start_row = rows / 2 + banner_height / 2 + 3;
 
-    // Build the entire shortcuts string first
+    // Get and set the shortcuts color.
+    let shortcuts_color = match &config.shortcuts_color {
+        Some(color_str) => parse_color(color_str)?,
+        None => Color::Blue, // Default
+    };
+    execute!(stdout(), SetForegroundColor(shortcuts_color))?;
+
+    // Build the entire shortcuts string first, with better spacing.
     let mut shortcuts_string = String::new();
     for (key, shortcut) in &config.shortcuts {
-        // Use the configured color, or default to blue if not set
-        let color_code = config.shortcuts_color.as_deref().unwrap_or("\x1b[34m");
-        shortcuts_string.push_str(color_code);
-
+        //The key
         shortcuts_string.push_str(&format!("({})", key));
-        shortcuts_string.push_str("\x1b[0m"); // Reset color
 
+        //the icon
         if let Some(icon) = &shortcut.icon {
-            shortcuts_string.push_str(&format!(" {} ", icon));
+            shortcuts_string.push_str(&format!("{} ", icon)); // Add space after icon
         }
-        shortcuts_string.push_str(&format!("{}  ", shortcut.name));
+        //The name of the shortcut
+        shortcuts_string.push_str(&format!("{:<10} ", shortcut.name)); // Left-align names, fixed width
     }
 
-    // Calculate the starting column for centering
-    let shortcuts_width = shortcuts_string.len() as u16;
+    // Calculate the starting column for centering.
+    let shortcuts_width = console::measure_text_width(&shortcuts_string) as u16;
+
     let start_col = if shortcuts_width < cols {
         (cols - shortcuts_width) / 2
     } else {
@@ -81,18 +91,16 @@ pub fn display_shortcuts(config: &Config) -> Result<(), Box<dyn std::error::Erro
     execute!(
         stdout(),
         crossterm::cursor::MoveTo(start_col, shortcuts_start_row),
-        //SetForegroundColor(Color::Blue),
         Print(shortcuts_string),
-        //ResetColor
     )?;
+    execute!(stdout(), ResetColor)?;
 
     Ok(())
 }
 pub fn display_prompt(config: &Config) -> Result<(), Box<dyn std::error::Error>> {
-    let (cols, _rows) = size()?;
+    let (cols, rows) = size()?;
     let prompt_text = "Enter command: ";
-    let prompt_width = prompt_text.len() as u16;
-    let color_code = config.prompt_color.as_deref().unwrap_or("\x1b[33m"); // Default yellow
+    let prompt_width = console::measure_text_width(prompt_text) as u16;
 
     // Calculate centered column
     let start_col = if prompt_width < cols {
@@ -100,13 +108,22 @@ pub fn display_prompt(config: &Config) -> Result<(), Box<dyn std::error::Error>>
     } else {
         0
     };
-    execute!(stdout(), crossterm::cursor::MoveTo(start_col, _rows - 1))?; //place it at bottom
+    let prompt_start_row = rows - 1;
+
+    let prompt_color = match &config.prompt_color {
+        Some(color_str) => parse_color(color_str)?,
+        None => Color::Yellow, // Default
+    };
+
     execute!(
         stdout(),
-        //SetForegroundColor(Color::Yellow),
-        Print(color_code),
+        crossterm::cursor::MoveTo(start_col, prompt_start_row)
+    )?; //place it at bottom
+    execute!(
+        stdout(),
+        SetForegroundColor(prompt_color),
         Print(prompt_text),
-        Print("\x1b[0m")
+        ResetColor
     )?;
     stdout().flush()?;
     Ok(())
