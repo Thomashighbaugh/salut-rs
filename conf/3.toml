@@ -1,0 +1,12 @@
+banner = "Default Banner"
+figlet_font = "small" # A small, simple font.
+banner_color = "White"
+shortcuts_color = "White"
+prompt_color = "White"
+
+[shortcuts]
+nv.name = "Neovim"
+nv.command = "nvim"
+
+sh.name = "Shell"
+sh.command = "zsh"

@@ -68,15 +68,17 @@ pub fn display_shortcuts(config: &Config) -> Result<(), Box<dyn std::error::Erro
     // Build the entire shortcuts string first, with better spacing.
     let mut shortcuts_string = String::new();
     for (key, shortcut) in &config.shortcuts {
-        //The key
-        shortcuts_string.push_str(&format!("({})", key));
-
         //the icon
         if let Some(icon) = &shortcut.icon {
-            shortcuts_string.push_str(&format!("{} ", icon)); // Add space after icon
+            shortcuts_string.push_str(&format!("{}", icon));
         }
         //The name of the shortcut
-        shortcuts_string.push_str(&format!("{:<10} ", shortcut.name)); // Left-align names, fixed width
+        shortcuts_string.push_str(&format!("{:<4}", shortcut.name)); // Left-align names, fixed width
+
+        //The key
+        shortcuts_string.push_str(&format!("({})      ", key)); //add padding with the key
+                                                                // Add spacing between entries
+        shortcuts_string.push(' '); // Keep a space between entries
     }
 
     // Calculate the starting column for centering.

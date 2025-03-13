@@ -1,0 +1,18 @@
+banner = "Default Banner"
+figlet_font = "slant"  # A slanted font
+banner_color = "DarkRed"
+shortcuts_color = "DarkGrey"
+prompt_color = "DarkCyan"
+
+[shortcuts]
+bt.name = "Btop"
+bt.icon = "ﳎ "
+bt.command = "btop"
+
+lf.name = "Lf"
+lf.icon = " "
+lf.command = "lf"
+
+vim.name = "Vim"
+vim.icon = " "
+vim.command = "vim"

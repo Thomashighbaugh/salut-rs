@@ -1,0 +1,18 @@
+banner = "Default Banner"
+figlet_font = "standard"  # Classic Figlet font
+banner_color = "Green"
+shortcuts_color = "Blue"
+prompt_color = "Yellow"
+
+[shortcuts]
+nv.name = "Neovim"
+nv.icon = " "
+nv.command = "nvim"
+
+ff.name = "Fastfetch"
+ff.icon = " "
+ff.command = "fastfetch"
+
+sh.name = "Shell"
+sh.icon = " "
+sh.command = "zsh"

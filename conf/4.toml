@@ -1,0 +1,22 @@
+banner = "Default Banner"
+figlet_font = "chunky"
+banner_color = "Magenta"
+shortcuts_color = "Cyan"
+prompt_color = "Red"
+
+[shortcuts]
+nc.name = "ncdu"
+nc.icon = " "
+nc.command = "ncdu"
+
+yt.name = "yt-dlp"
+yt.icon = " "
+yt.command = "yt-dlp"
+
+rg.name = "ripgrep"
+rg.icon = " "
+rg.command = "rg"
+
+e.name = "Emacs"
+e.icon = " "
+e.command = "emacs"

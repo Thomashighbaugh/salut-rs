@@ -1,0 +1,26 @@
+banner = "Default Banner"
+figlet_font = "isometric1"  # A more unusual font
+banner_color = "Yellow"
+shortcuts_color = "Green"
+prompt_color = "Blue"
+
+[shortcuts]
+py.name = "Python"
+py.icon = " "
+py.command = "python3"
+
+jv.name = "Java"
+jv.icon = " "
+jv.command = "java"
+
+ed.name = "Ed"       # The standard editor :)
+ed.icon = ""      # No icon this time.
+ed.command = "ed"
+
+rust.name = "Rust"
+rust.icon = " "
+rust.command = "cargo"
+
+web.name = "Browser"
+web.icon = "爵 "
+web.command = "firefox" # Or your preferred browser.
