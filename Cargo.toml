@@ -1,0 +1,13 @@
+# salut-rs/Cargo.toml
+[package]
+name = "salut-rs"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+toml = "0.8"  # For parsing the TOML configuration file.
+serde = { version = "1.0", features = ["derive"] } # For serialization/deserialization.
+serde_derive = "1.0"
+crossterm = "0.27" # For cross-platform terminal manipulation (colors, clearing, etc.).
+dirs = "5.0"   #for getting config home directory
+
